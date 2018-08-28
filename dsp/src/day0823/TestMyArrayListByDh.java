@@ -1,4 +1,4 @@
-package doje.gun.list.day0822;
+package day0823;
 
 import java.util.List;
 import java.util.function.UnaryOperator;
@@ -39,24 +39,22 @@ public class TestMyArrayListByDh {
 		if (index < 0 || index > size) {
 			throw new ArrayIndexOutOfBoundsException("인덱스를 확인하세요.");
 		}
-//		System.out.println("element : " + element);
 
-		for (int i = size - 1; i >= index; i --) {
-			arr[i] = arr[i - 1];
+		add(element);
 			
-			arr[index] = element;
+		// 배열의 마지막 자리부터 전 인덱스의 값을 오른쪽으로 이동
+		System.out.println(">> size : " + size + ", index : " + index);
+		for (int i = size; i >= index; i--) {
+//			arr[i] = arr[i - 1];
+			if (index == 0) {
+				arr[i+1] = arr[i];
+			} else {
+				arr[i] = arr[i - 1];
+			}
 		}
-		
-		
-//		// 배열의 마지막 자리부터 전 인덱스의 값을 오른쪽으로 이동
-//		System.out.println(">>size : " + size);
-////		for (int i = size; i >= index; i--) {
-////			System.out.print(i + " : " + arr[i] + " | ");
-////			arr[i] = arr[i - 1];
-////		}
-//		System.out.println();
-//		// 실질적으로 index의 자리는 쓸모없는 값이 들어있으므로 값을 넣어줌
-//		arr[index] = element;
+		System.out.println("---------------------------------");
+		// 실질적으로 index의 자리는 쓸모없는 값이 들어있으므로 값을 넣어줌
+		arr[index] = element;
 	}
 
 	// 넘어온 파라미터 문자열 List를 배열의 마지막에 넣어주는 메소드
@@ -72,10 +70,10 @@ public class TestMyArrayListByDh {
 	// 넘어온 파라미터 문자열 List를 넘어온 파라미터 index번째부터 배열에 넣어주는 메소드
 	public boolean addAll(int index, List<String> c) {
 		// 0부터 넘어온 리스트의 길이만큼 반복
-		System.out.println("index : " + index + ", size : " + size);
 		for (int i = 0; i < c.size(); i++) {
 			// add메소드 호출
 			add(index, c.get(i));
+			index ++;
 		}
 		return false;
 	}
@@ -159,20 +157,25 @@ public class TestMyArrayListByDh {
 		return -1;
 	}
 
-	public String remove(int index) {
+//	public String remove(int index) {
+	public boolean remove(int index) {
 		// 넘어온 index파라미터 값이 실질적 크기인 size보다 큰가?
 		// *있지도 않은 값을 삭제할 순 없음
 		if (size < index || index < 0) {
 			throw new ArrayIndexOutOfBoundsException("인덱스를 확인하세요.");
 		}
+		boolean flag = false;
 		// i가 index부터 size 작을 때까지 증가
 		for (int i = index; i < size - 1; i++) {
 			// i번째 arr배열의 값은 arr i + 1번째 값
 			// 값을 왼쪽으로 밀어줌으로써 삭제와 같은 효과를 냄
 			arr[i] = arr[i + 1];
+			flag = true;
 		}
 		size--;
-		return null;
+		return flag;
+//		return null;
+		
 	}
 
 	public boolean remove(String str) {

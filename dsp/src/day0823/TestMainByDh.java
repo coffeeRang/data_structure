@@ -1,4 +1,4 @@
-package doje.gun.list.day0822;
+package day0823;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,9 +21,13 @@ public class TestMainByDh {
 			
 		// addAll 테스트
 		List<String> list1 = new ArrayList<String>();
-		for (int i = 0; i < 3; i ++) {
-			list1.add("string" + i);
-		}
+//		for (int i = 0; i < 3; i ++) {
+//			list1.add("string" + i);
+//		}
+		list1.add("111");
+		list1.add("222");
+		list1.add("333");
+//		list1.add("333");
 		
 		System.out.print("\n>> 입력할 값들 : ");
 		for (int i = 0; i < list1.size(); i ++) {
@@ -32,8 +36,15 @@ public class TestMainByDh {
 		System.out.println();
 		
 		// 테스트 항목
-//		originList.addAll(2, list1);
-		originList.addAll(1, list1);
+//		originList.addAll(0, list1);
+//		originList.clear();
+//		System.out.println(originList.contains(null));
+//		System.out.println(originList.containsAll(list1));
+//		System.out.println(originList.indexOf("112"));
+//		System.out.println(originList.isEmpty());
+//		System.out.println(originList.lastIndexOf("111"));
+		System.out.println(originList.remove(1));
+		
 		
 		
 		System.out.println();
