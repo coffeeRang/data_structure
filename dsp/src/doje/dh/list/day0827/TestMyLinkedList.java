@@ -71,7 +71,7 @@ public class TestMyLinkedList {
 
 	
 	public String get(int arg0) {
-		Node temp = frontNode(arg0);
+		
 		
 		return null;
 	}
