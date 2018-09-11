@@ -1,15 +1,33 @@
 package doje.dh.map.myhashmap.day0911;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-
-import doje.gun.map.day0910.MyMap;
-
 public class TestMyHashMapMain {
 	
 	public static void main(String[] args) {
-		MyHashMapByDh<Integer, String> myHashMap = new MyHashMapByDh<Integer, String>();
+		int size = 3;
+//		MyHashMapByDh<String, String> myHashMap = new MyHashMapByDh<String, String>(size);
+		MyHashMapByDh<Integer, String> myHashMap = new MyHashMapByDh<Integer, String>(size);
+		System.out.println("========== 더하기 시작 ================");
+		myHashMap.put(1, "테스트1");
+		myHashMap.put(2, "테스트2");
+		myHashMap.put(3, "테스트3");
+//		System.out.println(myHashMap.put(4, "테스트4");
+		myHashMap.put(1, "cahnge1");
+		System.out.println("========== 더하기 완료 ================");
+		
+		System.out.println(myHashMap.get(1));
+		System.out.println(myHashMap.get(2));
+		System.out.println(myHashMap.get(3));
+
+		System.out.println("========= 기타기능 테스트 ===============");
+//		System.out.println(myHashMap.containsKey("테스트2"));
+		
+		
+
+		
+		
+
+		
+	
 		
 		
 		
