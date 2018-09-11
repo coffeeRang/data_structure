@@ -1,10 +1,10 @@
-package doje.dh.mymap;
+package doje.dh.map.mymap.day0911;
 
 import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
-import doje.dh.mymap.MyArrayList;
+import doje.dh.map.util.MyArrayList;
 
 public class MyMapByDh {
 	public MyEntry entry = null;

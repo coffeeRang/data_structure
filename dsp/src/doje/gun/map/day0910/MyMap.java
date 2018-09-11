@@ -6,7 +6,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
 
-import doje.dh.mymap.MyGenericMapByDh.MyEntry;
+import doje.dh.map.mymap.day0911.MyGenericMapByDh.MyEntry;
 import doje.gun.map.day0910.MyArrayList;
 
 public class MyMap<K, V> {
@@ -214,15 +214,18 @@ public class MyMap<K, V> {
 	
 	/**
 	 * value 값 list 에 담아서 return
+	 * 현재 MyArrayList 가 List를 implements 받은 clss 가 아니라 Collection 캐스팅 불가능
+	 * 현재 개발중에는 values 리턴시 MyArrayList 로 return 하기로 정의
+	 * @author dhkim
 	 * @return
 	 */
-	public Collection<V> values() {
+	public MyArrayList<V> values() {
 		MyArrayList<V> tempList = new MyArrayList<V>();
 		for (int i = 0; i < list.size(); i++) {
 			tempList.add(list.get(i).getValue());
 			
 		}
-		return (Collection<V>) tempList;
+		return tempList;
 
 //		return (Collection<V>) list;
 	}

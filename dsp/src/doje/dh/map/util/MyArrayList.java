@@ -1,4 +1,4 @@
-package doje.dh.mymap;
+package doje.dh.map.util;
 
 import java.util.List;
 
