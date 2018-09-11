@@ -1,4 +1,4 @@
-package doje.dh.list.arraylist.day0823;
+package doje.dh.list.myarraylist.day0823;
 
 import java.util.List;
 import java.util.function.UnaryOperator;

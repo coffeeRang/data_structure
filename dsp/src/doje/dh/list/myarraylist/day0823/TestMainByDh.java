@@ -1,4 +1,4 @@
-package doje.dh.list.arraylist.day0823;
+package doje.dh.list.myarraylist.day0823;
 
 import java.util.ArrayList;
 import java.util.List;
