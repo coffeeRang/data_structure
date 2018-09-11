@@ -1,15 +1,15 @@
-package doje.sy.list.day0827;
+package doje.sy.list.arraylist.day0827;
 
 import java.util.List;
 
-public class MyArrayList_Generic<E> {
+public class MyArrayList_Integer {
 
-	E[] arr;
+	int[] arr;
 	int size;
 
-	public MyArrayList_Generic() {
+	public MyArrayList_Integer() {
 
-		arr = (E[]) new Object[10]; // 배열을 10으로 잡아줌.
+		arr = new int[10]; // 배열을 10으로 잡아줌.
 		size = 0; // 사이즈를 0으로 초기화
 	}
 
@@ -21,10 +21,10 @@ public class MyArrayList_Generic<E> {
 		}
 	}
 
-	public boolean add(E e) { // 맨뒤부터 값을넣음. ㅇ
+	public boolean add(int e) { // 맨뒤부터 값을넣음. ㅇ
 		// 사이즈가 어레이크기보다 크거나 같고 사이즈가 0보다 작으면 구문 실행
 		if (size >= arr.length || size < 0) {
-			E[] data = (E[]) new Object[arr.length * 2];
+			int[] data = new int[arr.length * 2];
 			System.arraycopy(arr, 0, data, 0, arr.length);
 			arr = data;
 		}
@@ -35,9 +35,10 @@ public class MyArrayList_Generic<E> {
 	}
 
 	// add(int index, String e) == 원하는 위치에 string 값을 넣음
-	public void add(int index, E e) { // index = 위치 /size = arr.length에 들어있는 값 /arr.length = 크기
-		checkBoundException(index);
-		add(e); // add의 Exception부분을 호출.
+	public void add(int index, int e) { // index = 위치 /size = arr.length에 들어있는 값 /arr.length = 크기
+		checkBoundException(index); // add의 Exception부분을 호출.
+		add(e);
+
 		if (size >= 0) {
 
 			for (int i = size - 1; i > index; i--) { // size로 잡고 index보다 크거나 같게 --를 해준다.
@@ -50,8 +51,8 @@ public class MyArrayList_Generic<E> {
 
 	}
 
-	public boolean addAll(List<E> c) { // size값 맨뒤부터 붙임 ㅇ.
-										// c.size()만큼 돌리고 i를 +해준다.
+	public boolean addAll(List<Integer> c) { // size값 맨뒤부터 붙임 ㅇ.
+												// c.size()만큼 돌리고 i를 +해준다.
 		for (int i = 0; i < c.size(); i++) {
 
 			add(c.get(i));
@@ -60,7 +61,7 @@ public class MyArrayList_Generic<E> {
 		return false;
 	}
 
-	public boolean addAll(int index, List<E> c) { // 위치값에 넣을값을 모두 넣고 쉬프트 한다.
+	public boolean addAll(int index, List<Integer> c) { // 위치값에 넣을값을 모두 넣고 쉬프트 한다.
 
 		for (int i = 0; i < c.size(); i++) {
 
@@ -78,32 +79,33 @@ public class MyArrayList_Generic<E> {
 
 	}
 
-	public boolean contains(E str) { // 하나의 값이 들어가있는지 확인.
+	public boolean contains(int str) { // 하나의 값이 들어가있는지 확인.
+
 		return indexOf(str) >= 0;
-		// for (int i = 0; i < size; i++) {
-		// if (arr[i] == str ) {
-		// return true;
-		// }
-		// }
-		// return false;
+//		for (int i = 0; i < size; i++) {
+//			if (arr[i] == str) {
+//				return true;
+//			}
+//		}
+//		return false;
 	}
 
-	public boolean containsAll(List<E> c) {  //contains 에서 이미 indexOf를 사용하기때문에 contains를
-		for (int i = 0; i < c.size(); i++) { //false랑 비교해서 false면 false를 리턴해주고 아니면 true를
-			if (contains(c.get(i)) == false) { //반환	
+	public boolean containsAll(List<Integer> c) {
+		for (int i = 0; i < c.size(); i++) {		
+			if (contains(c.get(i)) == false) {				
 				return false;
 			}
 		}
 		return true;
 	}
 
-	public E get(int index) {
-		E str = arr[index];
+	public Integer get(int index) {
+		int str = arr[index];
 
 		return str;
 	}
 
-	public int indexOf(E str) { // 오른쪽부터 검사하여 찾고자 하는 값의 첫번째 값을 반환
+	public int indexOf(int str) { // 오른쪽부터 검사하여 찾고자 하는 값의 첫번째 값을 반환
 
 		for (int i = 0; i < size; i++) {
 
@@ -125,7 +127,7 @@ public class MyArrayList_Generic<E> {
 		return this.size == 0;
 	}
 
-	public int lastIndexOf(E str) { // indexOf와 반대로 오른쪽에서 부터 값을 반환한다.
+	public int lastIndexOf(int str) { // indexOf와 반대로 오른쪽에서 부터 값을 반환한다.
 
 		for (int i = size - 1; i >= 0; i--) { // 사이즈값을 0이될때까지 돌린다.
 
@@ -146,18 +148,18 @@ public class MyArrayList_Generic<E> {
 		return 1;
 	}
 
-	public boolean remove(Object o) {
+	public int remove(Object o) {
 
 		for (int i = 0; i < size; i++) { // 0부터 size값 만큼 확인.
-			if (arr[i].equals(o)) { // 배열[i]와 str이 같은지 확인. 같으면 str값을 지우고 한칸씩 밀어서 채워준다.
+			if (arr[i] == (Integer) o) { // 배열[i]와 str이 같은지 확인. 같으면 str값을 지우고 한칸씩 밀어서 채워준다.
 				remove(i); // 지우고 한칸씩 채워주는 구문을 호출.
 			}
 		}
 
-		return false;
+		return 0;
 	}
 
-	public boolean removeAll(List<E> c) {
+	public boolean removeAll(List<Integer> c) {
 		for (int i = 0; i < c.size(); i++) { // 값이 들어온 만큼 그값을 삭제.
 
 			remove(c.get(i)); // remove메소드 호출, c.get(i)값을 가져온다.
@@ -166,18 +168,18 @@ public class MyArrayList_Generic<E> {
 		return false;
 	}
 
-	public boolean retainAll(List<E> c) {
+	public boolean retainAll(List<Integer> c) {
 
 		clear(); // 클리어 메소드를 호출하여 0으로 초기화해준다.
 		addAll(c); // addAll메소드를 호출하고 값을 채워준다.
 		return false;
 	}
 
-	public E set(int index, E e) {
+	public Integer set(int index, int e) {
 		if (size < index) { // 위치값이 사이즈값보다 크면 띄운다.
 			throw new IndexOutOfBoundsException("index값을 확인하세요.");
 		}
-		E oldStr = arr[index]; // 원래 배열안에 있던 값을 새로 만든 str에 저장한다.
+		int oldStr = arr[index]; // 원래 배열안에 있던 값을 새로 만든 str에 저장한다.
 
 		arr[index] = e; // index값을 e로 바꾼다.
 

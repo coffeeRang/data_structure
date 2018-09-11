@@ -1,4 +1,4 @@
-package doje.sy.list.day0828;
+package doje.sy.list.linkedlist.day0828;
 
 import java.util.Collection;
 import java.util.Iterator;
