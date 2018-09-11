@@ -3,20 +3,28 @@ package doje.gun.map.day0910;
 public class Main {
 
 	public static void main(String[] args) {
-		MyMap<Integer, String> map = new MyMap<Integer, String>();
-//		map.put("김건 학번", 31405);
-//		map.put("남상엽 학번", 31408);
-//		
-//		map.put("남상엽 학번", 21408);
-		map.put(31405, "남상엽");
-		map.put(31405, "김건");
-		map.put(31408, "남상엽");
-		System.out.println(map.containsKey(31405));
-		System.out.println(map.containsValue("남상엽"));
-//		map.clear();
-		map.remove(31408);
-		System.out.println(map.get(31405));
-		System.out.println(map.get(31408));
+		MyMap<Integer, String> myMap = new MyMap<Integer, String>();
+		
+		for (int i = 0; i < 3; i ++) {
+			myMap.put(i, "테스트"+i);
+		}
+		
+		System.out.println("=============== 수정 전 ====================");
+		for (int i = 0 ; i < 6; i ++) {			
+			System.out.println("key값 : " +i + "	| 존재여부 : " + myMap.containsKey(i) + "	| value : " +  myMap.get(i));
+		}
+
+		myMap.put(4, "추가데이터1");
+		System.out.println("=============== 수정 이후 ====================");
+		for (int i = 0 ; i < 6; i ++) {
+			System.out.println("key값 : " +i + "	| 존재여부 : " + myMap.containsKey(i) + "	| value : " +  myMap.get(i));
+		}
+//		myMap.clear();
+		System.out.println(myMap.isEmpty());
+		System.out.println(myMap.keySet());
+		System.out.println(myMap.entrySet());
+		
+		
 	}
 
 }
