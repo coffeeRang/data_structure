@@ -1,14 +1,16 @@
-package doje.dh.mymap;
+package doje.dh.map.mymap.day0911;
 
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.LinkedHashSet;
 import java.util.Map;
+import java.util.Map.Entry;
+
+import doje.dh.map.util.MyArrayList;
+
 import java.util.Set;
 
-import doje.dh.mymap.MyArrayList;
-
-public class MyGenericMapByDh<K, V> implements Map<K, V> {
+public class MyGenericMapByDh<K, V> {
 
 	private MyArrayList<MyEntry<K, V>> mList = new MyArrayList<MyEntry<K, V>>();
 	private int size = mList.size();
@@ -25,24 +27,24 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 			this.value = value;
 		}
 
-		@Override
+		
 		public K getKey() {
 			return this.key;
 		}
 
-		@Override
+		
 		public V getValue() {
 			return this.value;
 		}
 
-		@Override
+		
 		public V setValue(V value) {
 			V tempValue = this.value;
 			this.value = value;
 			return tempValue;
 		}
 		
-		@Override
+		
 		public String toString() {
 			return key + "=" + value; 
 			
@@ -60,20 +62,9 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 
 	
 	// method ---------------------------------------------------
-	@Override
-	public V get(Object key) {
-		V returnValue = null;
-		int index = findIndexByKey((K) key);
-		if (index > -1) {
-			returnValue = (V) mList.get(index).getValue();
-		}
-		
-		return returnValue;
-	}
-	
-	
 	/**
-	 * key에 해당하는 index 조회
+	 * list에서 key값에 해당하는 index 조회하는 함수
+	 * @author dhkim
 	 * @param key
 	 * @return
 	 */
@@ -88,9 +79,49 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 		}
 		return index;
 	}
-	
 
-	@Override
+
+	/**
+	 * 특정 값을 포함한 index 갯수 조회
+	 * @author dhkim
+	 * @param value
+	 * @return
+	 */
+	public int getIndexCountByValue(V value) {
+		int findCount = 0;
+		for (int i = 0; i < mList.size(); i++) {
+			V tempValue = mList.get(i).getValue();
+			if (value.equals(tempValue)) {
+				findCount += 1;
+			}
+		}
+		return findCount;
+	}
+	
+	/**
+	 * map에 entry 를 추가하는 put method
+	 * @author dhkim
+	 * @param key
+	 * @param value
+	 * @return
+	 */
+	public V get(Object key) {
+		V returnValue = null;
+		int index = findIndexByKey((K) key);
+		if (index > -1) {
+			returnValue = (V) mList.get(index).getValue();
+		}
+		
+		return returnValue;
+	}
+
+
+	/**
+	 * key값으로 map에 들어있는 entry의 value 값을 가져오는 메서드
+	 * @author dhkim
+	 * @param key
+	 * @return
+	 */
 	public V put(K key, V value) {
 		V previousValue = null;		
 		int index = findIndexByKey(key);
@@ -111,34 +142,21 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 
 	/**
 	 * MyMap에서 key 값 갖고 있을 경우 true 리턴하는 메서드
+	 * @author dhkim
+	 * @param key
+	 * @return
 	 */
-	@Override
 	public boolean containsKey(Object key) {
 		int index = findIndexByKey((K) key);
 		return index > -1? true: false; 
 	}
 
-	/**
-	 * 특정 값을 포함한 index 갯수 조회
-	 * @param value
-	 * @return
-	 */
-	public int getIndexCountByValue(V value) {
-		int findCount = 0;
-		for (int i = 0; i < mList.size(); i++) {
-			V tempValue = mList.get(i).getValue();
-			if (value.equals(tempValue)) {
-				findCount += 1;
-			}
-		}
-		return findCount;
-	}
-
 
 	/**
 	 * MyMap에 특정 값이 있을경우 return true
+	 * @param value
+	 * @return
 	 */
-	@Override
 	public boolean containsValue(Object value) {
 		boolean returnFlag = false;
 		if (0 < getIndexCountByValue((V) value)) {
@@ -150,28 +168,37 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 
 	/**
 	 * MyMap에 값이 없으면 true, 있으면 false
+	 * @return
 	 */
-	@Override
 	public boolean isEmpty() {	
 		return mList.size() == 0? true: false;
 	}
 
 
-	@Override
+	/**
+	 * 현재 map이 담긴 MyArrayList 사이즈 조회
+	 * @return
+	 */
 	public int size() {
 		return size;
 	}
 
 
-	@Override
+	/**
+	 * map 초기화
+	 */
 	public void clear() {
 		mList.clear();
 		size = mList.size();
-
 	}
 
 
-	@Override
+	/**
+	 * 입력받은 key 값에 해당하는 map의 entry를 삭제하는 메서드
+	 * @author dhkim
+	 * @param key
+	 * @return
+	 */
 	public V remove(Object key) {
 		V previousValue = null;
 		int index = findIndexByKey((K) key);
@@ -181,17 +208,16 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 			mList.remove(index);
 			size = mList.size();
 		}
-//		size = mList.size();
 		return previousValue;
 	}
 
 
 	/**
 	 * 다른 Map에 있는 값을 현재 MyMap에 넣어주는 메서드
+	 * @author dhkim
+	 * @param m
 	 */
-	@Override
 	public void putAll(Map<? extends K, ? extends V> m) {
-//		System.out.println(">> putAll method에 입력받은 parameter m : " + m);
 		Set<K> setKey = (Set<K>) m.keySet();
 		for (K key: setKey) {
 			put(key, m.get(key));
@@ -199,15 +225,27 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 	}
 	
 	
-	@Override
-	public Collection<V> values() {
-		MyArrayList<String> list = new MyArrayList<String>();
-
-//		return (Collection<V>) list;
-		return null;
+	/**
+	 * value 값 list 에 담아서 return
+	 * 현재 MyArrayList 가 List를 implements 받은 clss 가 아니라 Collection 캐스팅 불가능
+	 * 현재 개발중에는 values 리턴시 MyArrayList 로 return 하기로 정의
+	 * @author dhkim
+	 * @return
+	 */
+	public MyArrayList<V> values() {
+		MyArrayList<V> tempList = new MyArrayList<V>();
+		for (int i = 0; i < mList.size(); i++) {
+			tempList.add(mList.get(i).getValue());
+		}
+		return tempList;
 	}
 	
-	@Override
+
+	/**
+	 * entry를 담은 Set 으로 return 하는 메서드
+	 * @author dhkim
+	 * @return
+	 */
 	public Set<Entry<K, V>> entrySet() {
 		Set<Entry<K, V>> entrySet = new LinkedHashSet<Entry<K, V>>();
 		Set<K> keys = keySet();
@@ -220,7 +258,11 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 	}
 	
 	
-	@Override
+	/**
+	 * map의 key값을 Set으로 담아 return 하는 메서드
+	 * @author dhkim
+	 * @return
+	 */
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
 		for (int i = 0; i < mList.size(); i++) {
