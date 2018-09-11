@@ -214,7 +214,6 @@ public class MyGenericMapByDh<K, V> implements Map<K, V> {
 
 		for (K key: keys) {
 			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, get(key));
-//			System.out.println(">> key : " + newEntry.getKey() + ", value : " + newEntry.getValue());
 			entrySet.add(newEntry);
 		}
 		return entrySet;
