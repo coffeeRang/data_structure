@@ -213,17 +213,17 @@ public class MyHashMapByDh<K, V> {
 	}
 
 	/**
-	 * MyMap에 특정 값이 있을경우 return true
+	 * MyMap에 특정 값이 있을경우 return true - 수정중_20180911
 	 * @param value
 	 * @return
 	 */
-	public boolean containsValue(Object value) {
-		boolean returnFlag = false;
-		if (0 < getIndexCountByValue((V) value)) {
-			returnFlag = true;
-		}
-		return returnFlag;
-	}
+//	public boolean containsValue(Object value) {
+//		boolean returnFlag = false;
+//		if (0 < getIndexCountByValue((V) value)) {
+//			returnFlag = true;
+//		}
+//		return returnFlag;
+//	}
 //
 //
 //	/**
