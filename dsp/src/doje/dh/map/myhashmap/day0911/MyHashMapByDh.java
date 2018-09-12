@@ -65,7 +65,20 @@ public class MyHashMapByDh<K, V> {
 
 
 
-	// method ---------------------------------------------------	
+	// method ---------------------------------------------------
+
+	/**
+	 * key값 null check 하는 메서드
+	 * @param key
+	 * @throws NullPointerException
+	 */
+	public void checkNullValueOfKey(K key) throws NullPointerException{
+		if (key == null) {
+			throw new NullPointerException("key값에 null은 입력할 수 없습니다.");
+		}
+	}
+
+	
 	/**
 	 * hashMap을 만들기 위한 내부 MyArrayList 생성하는 메서드
 	 * @param size
@@ -85,8 +98,9 @@ public class MyHashMapByDh<K, V> {
 	 * @param v
 	 * @return
 	 */
-	public int getListIndexByKey(K k) {
-		int hashCode = k.hashCode();
+	public int getListIndexByKey(K key) {
+		checkNullValueOfKey(key);
+		int hashCode = key.hashCode();
 		return hashCode % devideHashNo;
 	}
 
@@ -98,6 +112,7 @@ public class MyHashMapByDh<K, V> {
 	 * @return
 	 */
 	public int findIndexByKey(K key) {
+		checkNullValueOfKey(key);
 		int index = -1;
 		int listIndex = getListIndexByKey(key);
 		
@@ -118,17 +133,21 @@ public class MyHashMapByDh<K, V> {
 	 * @param value
 	 * @return
 	 */
-//	public int getIndexCountByValue(V value) {
-//		int findCount = 0;
-//		for (int i = 0; i < mList.size(); i++) {
-//
-//			V tempValue = mList.get(i).getValue();
-//			if (value.equals(tempValue)) {
-//				findCount += 1;
-//			}
-//		}
-//		return findCount;
-//	}
+	public int getIndexCountByValue(V value) {
+		int findCount = 0;
+
+		for (int i = 0; i < mList.size(); i++) {
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				V tempValue = mList.get(i).get(j).getValue();
+				if (tempValue.equals(value)) {
+					findCount++;
+					break;
+				}
+			}
+			
+		}
+		return findCount;
+	}
 	
 	
 	public int getSumeOfInnerListSize() {
@@ -139,11 +158,7 @@ public class MyHashMapByDh<K, V> {
 		return sumSize;
 	}
 
-	public void checkNullValueOfKey(K key) throws NullPointerException{
-		if (key == null) {
-			throw new NullPointerException("key값에 null은 입력할 수 없습니다.");
-		}
-	}
+
 
 	/**
 	 * key값으로 map에 들어있는 entry의 value 값을 가져오는 메서드
@@ -176,7 +191,8 @@ public class MyHashMapByDh<K, V> {
 		
 		return previousValue;
 	}
-	
+
+
 	/**
 	 * map에 entry의 value를 가져오는 get method
 	 * @author dhkim
@@ -196,10 +212,6 @@ public class MyHashMapByDh<K, V> {
 		return returnValue;
 	}
 	
-	
-
-//	
-
 
 	/**
 	 * MyMap에서 key 값 갖고 있을 경우 true 리턴하는 메서드
@@ -217,119 +229,126 @@ public class MyHashMapByDh<K, V> {
 	 * @param value
 	 * @return
 	 */
-//	public boolean containsValue(Object value) {
-//		boolean returnFlag = false;
-//		if (0 < getIndexCountByValue((V) value)) {
-//			returnFlag = true;
-//		}
-//		return returnFlag;
-//	}
-//
-//
-//	/**
-//	 * MyMap에 값이 없으면 true, 있으면 false
-//	 * @return
-//	 */
-//	public boolean isEmpty() {	
-//		return mList.size() == 0? true: false;
-//	}
-//
-//
-//	/**
-//	 * 현재 map이 담긴 MyArrayList 사이즈 조회
-//	 * @return
-//	 */
-//	public int size() {
-//		return size;
-//	}
-//
-//
-//	/**
-//	 * map 초기화
-//	 */
-//	public void clear() {
-//		mList.clear();
-//		size = mList.size();
-//	}
-//
-//
-//	/**
-//	 * 입력받은 key 값에 해당하는 map의 entry를 삭제하는 메서드
-//	 * @author dhkim
-//	 * @param key
-//	 * @return
-//	 */
-//	public V remove(Object key) {
-//		V previousValue = null;
-//		int index = findIndexByKey((K) key);
-//
-//		if (index > -1) {
-//			previousValue = mList.get(index).getValue();
-//			mList.remove(index);
-//			size = mList.size();
-//		}
-//		return previousValue;
-//	}
-//
-//
-//	/**
-//	 * 다른 Map에 있는 값을 현재 MyMap에 넣어주는 메서드
-//	 * @author dhkim
-//	 * @param m
-//	 */
-//	public void putAll(Map<? extends K, ? extends V> m) {
-//		Set<K> setKey = (Set<K>) m.keySet();
-//		for (K key: setKey) {
-//			put(key, m.get(key));
-//		}
-//	}
-//	
-//	
-//	/**
-//	 * value 값 list 에 담아서 return
-//	 * 현재 MyArrayList 가 List를 implements 받은 clss 가 아니라 Collection 캐스팅 불가능
-//	 * 현재 개발중에는 values 리턴시 MyArrayList 로 return 하기로 정의
-//	 * @author dhkim
-//	 * @return
-//	 */
-//	public MyArrayList<V> values() {
-//		MyArrayList<V> tempList = new MyArrayList<V>();
-//		for (int i = 0; i < mList.size(); i++) {
-//			tempList.add(mList.get(i).getValue());
-//		}
-//		return tempList;
-//	}
-//	
-//
-//	/**
-//	 * entry를 담은 Set 으로 return 하는 메서드
-//	 * @author dhkim
-//	 * @return
-//	 */
-//	public Set<Entry<K, V>> entrySet() {
-//		Set<Entry<K, V>> entrySet = new LinkedHashSet<Entry<K, V>>();
-//		Set<K> keys = keySet();
-//
-//		for (K key: keys) {
-//			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, get(key));
-//			entrySet.add(newEntry);
-//		}
-//		return entrySet;
-//	}
-//	
-//	
-//	/**
-//	 * map의 key값을 Set으로 담아 return 하는 메서드
-//	 * @author dhkim
-//	 * @return
-//	 */
-//	public Set<K> keySet() {
-//		Set<K> keys = new LinkedHashSet<K>();
-//		for (int i = 0; i < mList.size(); i++) {
-//			keys.add(mList.get(i).getKey());
-//		}
-//		return keys;
-//	}
+	public boolean containsValue(Object value) {
+		boolean returnFlag = false;
+		if (0 < getIndexCountByValue((V) value)) {
+			returnFlag = true;
+		}
+		return returnFlag;
+	}
+
+
+	/**
+	 * MyMap에 값이 없으면 true, 있으면 false
+	 * @return
+	 */
+	public boolean isEmpty() {	
+		return mList.size() == 0? true: false;
+	}
+
+	/**
+	 * 현재 map이 담긴 MyArrayList 사이즈 조회
+	 * @return
+	 */
+	public int size() {
+		return size;
+	}
+
+
+	/**
+	 * map 초기화
+	 */
+	public void clear() {
+		mList.clear();
+		size = mList.size();
+	}
+	
+
+	/**
+	 * 입력받은 key 값에 해당하는 map의 entry를 삭제하는 메서드
+	 * @author dhkim
+	 * @param key
+	 * @return
+	 */
+	public V remove(Object key) {
+		V previousValue = null;
+		int listIndex = getListIndexByKey((K) key);
+		int entryIndex = findIndexByKey((K) key);
+
+		if (entryIndex > -1) {
+			previousValue = mList.get(listIndex).get(entryIndex).getValue();
+			mList.get(listIndex).remove(entryIndex);
+			size = getSumeOfInnerListSize();
+		}
+		return previousValue;
+	}
+
+
+	/**
+	 * 다른 Map에 있는 값을 현재 MyMap에 넣어주는 메서드
+	 * @author dhkim
+	 * @param m
+	 */
+	public void putAll(Map<? extends K, ? extends V> m) {
+		Set<K> setKey = (Set<K>) m.keySet();
+		for (K key: setKey) {
+			put(key, m.get(key));
+		}
+	}
+
+	
+	/**
+	 * value 값 list 에 담아서 return	-- 주소값으로만 표출됨(value 값으로 표출되게 변경 필요)
+	 * 현재 MyArrayList 가 List를 implements 받은 clss 가 아니라 Collection 캐스팅 불가능
+	 * 현재 개발중에는 values 리턴시 MyArrayList 로 return 하기로 정의
+	 * @author dhkim
+	 * @return
+	 */
+	public MyArrayList<V> values() {
+		MyArrayList<V> tempList = new MyArrayList<V>();
+		for (int i = 0; i < mList.size(); i++) {
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				V value = mList.get(i).get(j).getValue();
+				tempList.add(value);
+			}
+		}
+		return tempList;
+	}
+
+
+	/**
+	 * entry를 담은 Set 으로 return 하는 메서드
+	 * @author dhkim
+	 * @return
+	 */
+	public Set<Entry<K, V>> entrySet() {
+		Set<Entry<K, V>> entrySet = new LinkedHashSet<Entry<K, V>>();
+		Set<K> keys = keySet();
+
+		for (K key: keys) {
+			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, get(key));
+			entrySet.add(newEntry);
+		}
+		return entrySet;
+	}
+	
+	
+	/**
+	 * map의 key값을 Set으로 담아 return 하는 메서드
+	 * @author dhkim
+	 * @return
+	 */
+	public Set<K> keySet() {
+		Set<K> keys = new LinkedHashSet<K>();
+		
+		for (int i = 0; i < mList.size(); i++) {
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				K key = mList.get(i).get(j).getKey();
+				keys.add(key);
+			}
+		}
+		return keys;
+	}
 	
 
 }
