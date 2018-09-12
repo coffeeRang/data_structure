@@ -27,10 +27,10 @@ public class TestMyMapMain {
 			System.out.println("key값 : " +i + "	| 존재여부 : " + myMap.containsKey(i) + "	| value : " +  myMap.get(i));
 		}
 //		myMap.clear();
-		System.out.println(myMap.isEmpty());
-		System.out.println(myMap.keySet());
-		System.out.println(myMap.entrySet());
-		System.out.println(myMap.values());
+//		System.out.println(myMap.isEmpty());
+//		System.out.println(myMap.keySet());
+//		System.out.println(myMap.entrySet());
+		System.out.println(myMap.values().get(0));
 		
 		
 //		Map<String, String> originMap = new HashMap<String, String>();

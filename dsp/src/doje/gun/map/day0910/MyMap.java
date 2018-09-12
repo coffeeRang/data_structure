@@ -222,7 +222,7 @@ public class MyMap<K, V> {
 	public MyArrayList<V> values() {
 		MyArrayList<V> tempList = new MyArrayList<V>();
 		for (int i = 0; i < list.size(); i++) {
-			tempList.add(list.get(i).getValue());
+			tempList.add((V) list.get(i).getValue().toString());
 			
 		}
 		return tempList;

@@ -145,12 +145,13 @@ public class MyHashMap<K, V> {
 
 		V value = null;
 		Set<Entry<K, V>> set = entrySet();
-
-		for (Entry<K, V> ety : set) {
-			if (ety.getValue().equals(value)) {
-				value = ety.getValue();
-			}
-		}
+		System.out.println(">> set : " + set);
+		
+//		for (Entry<K, V> ety : set) {
+//			if (ety.getValue().equals(value)) {
+//				value = ety.getValue();
+//			}
+//		}
 		return value;
 	}
 
@@ -274,8 +275,11 @@ public class MyHashMap<K, V> {
 		Set<K> keys = keySet();
 
 		Set<Entry<K, V>> entry = new LinkedHashSet<Entry<K, V>>();
+		System.out.println(">> key size : " + keys.size());
 		for (K key : keys) {
-			entry.add(new Entry(key, get(key)));
+			System.out.println(key);
+			System.out.println(get(key));
+//			entry.add(new Entry(key, get(key)));
 		}
 
 		return entry;
