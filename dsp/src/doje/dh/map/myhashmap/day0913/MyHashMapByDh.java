@@ -1,13 +1,10 @@
-package doje.dh.map.myhashmap.day0911;
+package doje.dh.map.myhashmap.day0913;
 
-import java.util.ArrayList;
 import java.util.LinkedHashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
 import doje.dh.map.util.MyArrayList;
-import doje.dh.map.util.MyLinearMap;
 
 import java.util.Set;
 
@@ -90,6 +87,7 @@ public class MyHashMapByDh<K, V> {
 			mList.add( new MyArrayList<MyEntry<K, V>>() );
 			remainderKeyList.add(i);
 		}
+		System.out.println(">> makeListToUseHash 결과 size : " + mList.size());
 	}
 
 
@@ -180,23 +178,11 @@ public class MyHashMapByDh<K, V> {
 		if (maxSize != 0 && minSize != 0 && maxSize >= minSize*2) {
 			checkFlag = true;
 		}
-		System.out.println(">> checkFlag : " + checkFlag);
-		
 		
 		return checkFlag;
 		
 	}
-	
-	
 
-//	@Override
-//	public MyLinearMap<K, V>.Entry<K, V> getEntryByKey(K key) {
-//		// TODO Auto-generated method stub
-//		return super.getEntryByKey(key);
-//	}
-	
-	
-	
 	/**
 	 * key값으로 map에 들어있는 entry의 value 값을 가져오는 메서드
 	 * @author dhkim
@@ -206,58 +192,69 @@ public class MyHashMapByDh<K, V> {
 	public V put(K key, V value) {
 		checkNullValueOfKey(key);
 		V previousValue = null;
-		// 임시 주석
 		boolean flag = false;	// true : maxSize >= minSize*2 를 의미한다.
 		
-		System.out.println(">>>>>> put 이전 : (0)size: " + mList.get(0).size() + " | (1)size: " + mList.get(1).size() + " | (2)size: " + mList.get(2).size() + ", total_size: " + size);
-		// hash 코드 신경 안쓰기 위해 임시 주석처리
-//		if (size > 0) {	// 0보다 크다면 maxSize, minSize 비교 필요
-//			// maxSize >= minSize * 2 일 경우 innerList 새로 만듬
-//			flag = checkInnerListSize();
-//		}
-//		
-//		if (flag) {	// innerList 재생성하고 값 재분배하기
-//			// 기존 나눠져있던 데이터 한 arrayList로 담기
-//			MyGenericArrayList<Entry<K, V>> tempList = new MyGenericArrayList<Entry<K, V>>();
-//			for (int i= 0; i < mList.size(); i++) {
-//				for (int j = 0; j < mList.get(i).size(); j++) {
-//					Entry<K, V> entry = mList.get(i).get(j);
-//					tempList.add(entry);
-//				}
-//			}
-////			System.out.println(">> tempList size : " + tempList.size());
-//
-//			// 재생성 로직 실행
-//			makeListToUseHash(mList.size() * 2); // 개발중 미테스트
-//			
-//			
-//			// 일반 put 처리
-//
-//		} else {
-//			// 일반 put 처리
-//			
-//		}
+//		System.out.println(">>>>>> put 이전 : (0)size: " + mList.get(0).size() + " | (1)size: " + mList.get(1).size() + " | (2)size: " + mList.get(2).size() + ", total_size: " + size);
+		if (size > 0) {	// 0보다 크다면 maxSize, minSize 비교 필요
+			// maxSize >= minSize * 2 일 경우 innerList 새로 만듬
+			flag = checkInnerListSize();
+		}
 		
-		
-		int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
-		int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회 
-		
-		if (-1 < entryIndex) {
-			// 덮어쓰기
-			previousValue = (V) mList.get(listIndex).get(entryIndex).getValue();
-			mList.get(listIndex).get(entryIndex).setValue(value);
+		System.out.println(">> put 하기 전 flag : " + flag);
+		if (flag) {	// innerList 재생성하고 값 재분배하기
+			System.out.println("re defined start!!!!!!!!!!!!!!!!!!!!!!");
+			// 기존 나눠져있던 데이터 한 arrayList로 담기
+			MyArrayList<Entry<K, V>> tempList = new MyArrayList<Entry<K, V>>();
+			for (int i= 0; i < mList.size(); i++) {
+				for (int j = 0; j < mList.get(i).size(); j++) {
+					Entry<K, V> entry = mList.get(i).get(j);
+					tempList.add(entry);
+				}
+			}
 			
-		} else {
-			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
-			mList.get(listIndex).add(newEntry);
-			size = getSumeOfInnerListSize();
+			// 재생성 로직 실행
+			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
+			System.out.println(">> makeListtoUseHash 결가 innerList size : " + devideHashNo);
+			// 일반 put 처리
+			for (int i = 0; i < tempList.size(); i++) {
+				K tempKey = tempList.get(i).getKey();
+				V tempValue = tempList.get(i).getValue();
+				System.out.println(">> tempKey : " + tempKey + ", value : " + tempValue);
+				
+				int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
+				int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회
+				System.out.println(">> devideHashNo : " + devideHashNo);
+				System.out.println(">> listIndex : " + listIndex);
+				
+				MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
+				mList.get(listIndex).add(newEntry);
+//				
+			}
+			
 
-//			super.put(key, value);
-//			size = super.size();
+		} else {
+			// 일반 put 처리
+			int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
+			int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회 
+			
+			if (-1 < entryIndex) {
+				// 덮어쓰기
+				previousValue = (V) mList.get(listIndex).get(entryIndex).getValue();
+				mList.get(listIndex).get(entryIndex).setValue(value);
+				
+			} else {
+				MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
+				mList.get(listIndex).add(newEntry);
+				
+				size = getSumeOfInnerListSize();
+				
+			}
 			
 		}
+		
 		size = getSumeOfInnerListSize();
 		System.out.println(">> put 결과 : (0)size: " + mList.get(0).size() + " | (1)size: " + mList.get(1).size() + " | (2)size: " + mList.get(2).size() + ", total_size: " + size + "\n");
+//		System.out.println(">> entrySet : " +  this.entrySet());
 		
 		return previousValue;
 	}
@@ -397,7 +394,7 @@ public class MyHashMapByDh<K, V> {
 
 		for (K key: keys) {
 			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, get(key));
-//			entrySet.add(newEntry);
+			entrySet.add(newEntry);
 		}
 		return entrySet;
 	}
