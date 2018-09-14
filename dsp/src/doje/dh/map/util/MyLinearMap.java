@@ -9,25 +9,23 @@ import doje.dh.map.util.MyArrayList;
 
 public class MyLinearMap<K, V> {
 
-	//key와 value를 가지고 있는 Entry를 담기 위한 list
-	private MyArrayList<Entry<K, V>> list;
-	//배열의 size
-	private int size;
+	private MyArrayList<Entry<K, V>> list;	// key와 value를 가지고 있는 Entry를 담기 위한 list
+	private int size;						// 배열 사이즈
 
 	/**
-	 * 초기화를 해준다.
-	 * @author kimgun
+	 * 생성자
+	 * @author dhkim
 	 */
 	public MyLinearMap() {
 		list = new MyArrayList<Entry<K, V>>();
 		size = 0;
 	}
 
-	/**key와value를 가지고 있는 이너 클래스
-	 *
+	/**
+	 * key와value를 가지고 있는 이너 클래스
+	 * @author dhkim
 	 * @param <K> Key
 	 * @param <V> Value
-	 * @author kimgun
 	 */
 	public class Entry<K, V> implements Map.Entry<K, V> {
 		private K key;
@@ -58,9 +56,10 @@ public class MyLinearMap<K, V> {
 		}
 	}
 
-	/**넘어온 파라미터의 널 체크를 함
+	/**
+	 * 넘어온 파라미터의 null check
+	 * @author dhkim
 	 * @param key null체크를 하고자 하는 변수
-	 * @author kimgun
 	 */
 	private void nullCheck(K key) {
 		if (key == null) {
@@ -86,10 +85,11 @@ public class MyLinearMap<K, V> {
 	}
 
 
-	/**해당 key의 인덱스를 반환해줌.
+	/**
+	 * 해당 key의 인덱스를 반환해줌.
+	 * @author dhkim
 	 * @param key 찾고자 하는 인덱스를 나타내는 변수
 	 * @return 인덱스를 반환해준다.
-	 * @author kimgun
 	 */
 	private int getKeyIndex(K key) {
 		nullCheck(key);
@@ -102,10 +102,11 @@ public class MyLinearMap<K, V> {
 		return idx;
 	}
 
-	/**해당 키의 value를 반환해준다.
+	/**
+	 * 해당 키의 value를 반환해준다.
+	 * @author dhkim
 	 * @param key value를 찾고자 하는 key의 값
 	 * @return 넘어온 key의 value
-	 * @author kimgun
 	 */
 	private V getValue(K key) {
 		nullCheck(key);
@@ -118,11 +119,12 @@ public class MyLinearMap<K, V> {
 		return value;
 	}
 
-	/**값을 추가해준다.
+	/**
+	 * 값을 추가해준다.
+	 * @author dhkim
 	 * @param key 값의 키
 	 * @param value 키에 매칭되는 값
 	 * @return 만약, 추가할 키와 같은 키가 이미 있으면 원래 키에 있던 값을 반환해주고, 아니면 null을 반환해준다.
-	 * @author kimgun
 	 */
 	public V put(K key, V value) {
 		nullCheck(key);
@@ -143,45 +145,50 @@ public class MyLinearMap<K, V> {
 		return returnV;
 	}
 
-	/**넘어온 key의 값을 넘겨준다.
+	/**
+	 * key 값에 해당하는 Value 를 return 하는 메서드
+	 * @author dhkim
 	 * @param key 찾고자 하는 value의 key
 	 * @return key의 매칭되는 value를 반환해준다.
-	 * @author kimgun
 	 */
 	public V get(Object key) {
 		nullCheck((K) key);
 		return getValue((K) key);
 	}
 
-	/**size를 반환해준다.
+	/**
+	 * map이 담긴 size return 하는 메서드
+	 * @author dhkim
 	 * @return size
-	 * @author kimgun
 	 */
 	public int size() {
 		return this.size;
 	}
 
-	/**배열에 요소가 없는지 판단
+	/**
+	 * 배열 size 확인하는 메서드
+	 * @author dhkim
 	 * @return size가 0이면 true를, 아니면 false를 반환해준다.
-	 * @author kimgun
 	 */
 	public boolean isEmpty() {
 		return size == 0;
 	}
 
-	/**넘어온 key와 같은 키가 있는지 판단한다.
+	/**
+	 * 입력받은 key값을 가진 map entry 존재 확인하는 메서드
+	 * @author dhkim
 	 * @param key 같은 값이 있는 지 판단하기 위함
 	 * @return 있으면 true, 없으면 false
-	 * @author kimgun
 	 */
 	public boolean containsKey(Object key) {
 		return getKeyIndex((K) key) > -1;
 	}
 
-	/**넘어온 value와 같은 값이 있는지 판단한다.
+	/**
+	 * 넘어온 value와 같은 값이 있는지 판단한다.
+	 * @author dhkim
 	 * @param value value와 같은 값이 있는 지 판단하기 위함 
 	 * @return 있으면 true, 없으면 false
-	 * @author kimgun
 	 */
 	public boolean containsValue(Object value) {
 		for (int i = 0; i < size; i++) {
@@ -192,10 +199,11 @@ public class MyLinearMap<K, V> {
 		return false;
 	}
 
-	/**넘어온 key에 해당하는 엔트리를 삭제한다.
+	/**
+	 * 입력받은 key에 해당하는 값을 삭제하는 메서드
+	 * @author dhkim
 	 * @param key 삭제할 엔트리의 key
 	 * @return 삭제가 되면 삭제한 엔트리의 value를, 아니면 null을 반환한다.
-	 * @author kimgun
 	 */
 	public V remove(K key) {
 		nullCheck(key);
@@ -212,9 +220,10 @@ public class MyLinearMap<K, V> {
 		return remove;
 	}
 
-	/**배열에 모두 추가해준다.
+	/**
+	 * 입력받은 map에 들어있는 entry를 기존 map이 추가하는 메서드
+	 * @author dhkim
 	 * @param m 추가할 리스트
-	 * @author kimgun
 	 */
 	private void putAll(Map<K, V> m) {
 		Set<K> keys = m.keySet();
@@ -224,9 +233,10 @@ public class MyLinearMap<K, V> {
 		}
 	}
 
-	/**배열 안에 모든 엔트리를 반환해준다.
+	/**
+	 * map에 있는 모든 entry를 반환하는 메서드
+	 * @author dhkim
 	 * @return 엔트리를 반환
-	 * @author kimgun
 	 */
 	private Set<Entry<K, V>> entrySet() {
 		Set<K> keys = keySet();
@@ -239,9 +249,10 @@ public class MyLinearMap<K, V> {
 		return entry;
 	}
 
-	/**엔트리들의 key를 모두 Set형태로 반환해준다.
+	/**
+	 * Set에 entry의 모든 key값을 return 하는 메서드
+	 * @author dhkim
 	 * @return keys 배열 안에 모든 key를 반환
-	 * @author kimgun
 	 */
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
@@ -253,8 +264,8 @@ public class MyLinearMap<K, V> {
 	}
 
 	/**
-	 * 배열 안에 요소들을 모두 비워준다
-	 * @author kimgun
+	 * 배열 안에 요소들을 모두 비우는 메서드
+	 * @author dhkim
 	 */
 	public void clear() {
 		size = 0;
