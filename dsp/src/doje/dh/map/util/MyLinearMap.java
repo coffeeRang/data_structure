@@ -78,10 +78,30 @@ public class MyLinearMap<K, V> {
 		for (int i = 0; i < list.size(); i++) {
 			Entry<K, V> entry = list.get(i);
 			if (entry.getKey().equals(key)) {
+				System.out.println("myLinearMap size : " + size);
 				return entry;
 			}
 		}
 		return null;
+	}
+
+	/**
+	 * index에 해당하는 Entry 반환하는 메서드
+	 * @author dhkim
+	 * @param index
+	 * @return
+	 */
+	public Entry<K, V> getEntryByIndex(int index) {
+		System.out.println("myLinearMap size : " + size);
+
+		return null;
+//		System.out.println(list.get(0).getValue());
+		
+		
+//		Entry<K, V> entry = list.get(index);
+//		return entry;
+//		return list.get(index);
+		
 	}
 
 

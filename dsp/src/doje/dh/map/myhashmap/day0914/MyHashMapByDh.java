@@ -95,7 +95,7 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	public int getListIndexByKey(K key) {
 		checkNullValueOfKey(key);
-		int hashCode = key.hashCode();
+		int hashCode = Math.abs(key.hashCode());
 		return hashCode % devideHashNo;
 	}
 	
@@ -111,6 +111,22 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	}
 	
 	/**
+	 * index 값에 해당하는 Entry를 return하는 메서드 - 수정필요
+	 * @author dhkim
+	 */
+	@Override
+	public MyLinearMap<K, V>.Entry<K, V> getEntryByIndex(int index) {
+		
+		for (int i = 0; i < remainderKeyList.size(); i++) {
+			System.out.println(i + ", " + index);
+			return mList.get(i).getEntryByIndex(index);
+		}
+//		return mList.get(index).getEntryByIndex(index);
+		return null;
+	}
+	
+
+	/**
 	 * hashMap을 만들기 위한 내부 MyArrayList 생성하는 메서드
 	 * @param size
 	 */
@@ -121,6 +137,7 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		for (int i = 0; i < size; i++) {
 			mList.add( new MyLinearMap<K, V>() );
 			remainderKeyList.add(i);
+			System.out.println(">> remainderKey : " + remainderKeyList.get(i));
 		}
 		this.size = getSumeOfInnerListSize();
 	}
@@ -137,14 +154,13 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		int index = -1;
 		int listIndex = getListIndexByKey(key);
 		
-//		for (int i = 0; i < mList.get(listIndex).size(); i++) {
-//			K mapKey = (K) mList.get(listIndex).get(i).getKey();
-//			if (key.equals(mapKey)) {
-//				index = i;
-//				break;
-//			}
-//		}
-		
+		for (int i = 0; i < mList.get(listIndex).size(); i++) {
+			K mapKey = (K) mList.get(listIndex).getEntryByKey(key).getKey();
+			if (key.equals(mapKey)) {
+				index = i;
+				break;
+			}
+		}
 		
 		return index;
 	}
@@ -233,49 +249,46 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		
 		if (flag) {	// innerList 재생성하고 값 재분배하기
 			System.out.println("re defined start!!!!!!!!!!!!!!!!!!!!!!");
-			// 기존 나눠져있던 데이터 한 arrayList로 담기
-			MyArrayList<Entry<K, V>> tempList = new MyArrayList<Entry<K, V>>();
-			
-//			Set sets= entrySet();
-			for (int i= 0; i < mList.size(); i++) {
+			// 기존 나눠져있던 데이터 한 arrayList로 담기 - 임시주석_20180914_김동혁
+//			MyArrayList<Entry<K, V>> tempList = new MyArrayList<Entry<K, V>>();
+//			
+//			for (int i= 0; i < mList.size(); i++) {
 //				mList.get(i).getEntryByKey(key);
-				
+//				
 //				for (int j = 0; j < mList.get(i).size(); j++) {
 //					Entry<K, V> entry = mList.get(i).get(j);
 //					tempList.add(entry);
 //				}
-			}
-			
-			// 재생성 로직 실행
-			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
-
-			// tempList에 임시 보관한 데이터를 새로 생성된 mList에 할당
-			for (int i = 0; i < tempList.size(); i++) {
-				K tempKey = tempList.get(i).getKey();
-				V tempValue = tempList.get(i).getValue();
-				
-				int listIndex = getListIndexByKey(tempKey);	// key값에 따른  devideHashNo의 listIndex 조회
-				
-				MyEntry<K, V> newEntry = new MyEntry<K, V>(tempKey, tempValue);
-				mList.get(listIndex).add(newEntry);
-			}
+//			}
+//			
+//			// 재생성 로직 실행
+//			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
+//
+//			// tempList에 임시 보관한 데이터를 새로 생성된 mList에 할당
+//			for (int i = 0; i < tempList.size(); i++) {
+//				K tempKey = tempList.get(i).getKey();
+//				V tempValue = tempList.get(i).getValue();
+//				
+//				int listIndex = getListIndexByKey(tempKey);	// key값에 따른  devideHashNo의 listIndex 조회
+//				
+//				MyEntry<K, V> newEntry = new MyEntry<K, V>(tempKey, tempValue);
+//				mList.get(listIndex).add(newEntry);
+//			}
 		}
 
 		// 일반 put 처리
 		int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
-		int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회 
+		int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회
+		
 		
 		if (-1 < entryIndex) {
-			// 덮어쓰기
-			previousValue = (V) mList.get(listIndex).get(entryIndex).getValue();
-			mList.get(listIndex).get(entryIndex).setValue(value);
+			// 덮어쓰기 - 임시주석_20180914_김동혁
+			previousValue = mList.get(listIndex).getEntryByIndex(entryIndex).getValue();
+			System.out.println("index에 해당하는 이전 value : " + previousValue);
+			mList.get(listIndex).getEntryByIndex(entryIndex).setValue(value);
 			
 		} else {
-			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
-			mList.get(listIndex).add(newEntry);
-			
-//			size = getSumeOfInnerListSize();
-			
+			mList.get(listIndex).put(key, value);
 		}
 		
 		size = getSumeOfInnerListSize();
@@ -297,7 +310,7 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		int entryIndex = findIndexByKey((K) key);
 		
 		if (entryIndex > -1) {
-			returnValue = (V) mList.get(listIndex).get(entryIndex).getValue();
+			returnValue = mList.get(listIndex).getEntryByKey((K)key).getValue();
 		}
 		
 		return returnValue;
@@ -365,10 +378,14 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		V previousValue = null;
 		int listIndex = getListIndexByKey((K) key);
 		int entryIndex = findIndexByKey((K) key);
+		K castKey = (K) key;
 
 		if (entryIndex > -1) {
-			previousValue = mList.get(listIndex).get(entryIndex).getValue();
-			mList.get(listIndex).remove(entryIndex);
+//			previousValue = mList.get(listIndex).get(entryIndex).getValue();
+//			mList.get(listIndex).remove(entryIndex);
+			previousValue = mList.get(listIndex).getEntryByKey(castKey).getValue();
+			mList.get(listIndex).remove((castKey));
+			
 			size = getSumeOfInnerListSize();
 		}
 		return previousValue;
@@ -397,12 +414,12 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	public MyArrayList<V> values() {
 		MyArrayList<V> tempList = new MyArrayList<V>();
-		for (int i = 0; i < mList.size(); i++) {
-			for (int j = 0; j < mList.get(i).size(); j++) {
-				V value = mList.get(i).get(j).getValue();
-				tempList.add(value);
-			}
-		}
+//		for (int i = 0; i < mList.size(); i++) {
+//			for (int j = 0; j < mList.get(i).size(); j++) {
+//				V value = mList.get(i).get(j).getValue();
+//				tempList.add(value);
+//			}
+//		}
 		return tempList;
 	}
 
@@ -433,18 +450,29 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
-		
+		// 기존 항목
 //		for (int i = 0; i < mList.size(); i++) {
 //			for (int j = 0; j < mList.get(i).size(); j++) {
 //				K key = mList.get(i).get(j).getKey();
 //				keys.add(key);
 //			}
 //		}
-		
 //		return keys;
+		System.out.println(">> size : " + size);
+		System.out.println(">> remainderKeyList size : " + remainderKeyList.size());
+		for (int i = 0; i < size; i++ ) {
+			
+			System.out.println(">>>> " + getEntryByIndex(i));
+			
+//				
+			
+		}
+		
+//		System.out.println(mList.get(0).getEntryByIndex(0).getValue());
+		// returnValue = mList.get(listIndex).getEntryByKey((K)key).getValue();
+		
+		return keys;
 
-		System.out.println(super.keySet());
-		return super.keySet();
 		
 	}
 	
