@@ -83,11 +83,13 @@ public class MyHashMapByDh<K, V> {
 	 */
 	public void makeListToUseHash(int size) {
 		mList = new MyArrayList<MyArrayList<MyEntry<K, V>>>();
+		devideHashNo = size;
+		remainderKeyList.clear();	// 초기화
 		for (int i = 0; i < size; i++) {
 			mList.add( new MyArrayList<MyEntry<K, V>>() );
 			remainderKeyList.add(i);
 		}
-		System.out.println(">> makeListToUseHash 결과 size : " + mList.size());
+		this.size = getSumeOfInnerListSize();
 	}
 
 
@@ -174,7 +176,7 @@ public class MyHashMapByDh<K, V> {
 				maxSize = innerListSize;
 			}
 		}
-		System.out.println(">> minSize : " + minSize + ", maxSize : " + maxSize);
+
 		if (maxSize != 0 && minSize != 0 && maxSize >= minSize*2) {
 			checkFlag = true;
 		}
@@ -193,14 +195,13 @@ public class MyHashMapByDh<K, V> {
 		checkNullValueOfKey(key);
 		V previousValue = null;
 		boolean flag = false;	// true : maxSize >= minSize*2 를 의미한다.
-		
+		System.out.println(">> put 하려는 값 key : " + key + ", value : " + value);
 //		System.out.println(">>>>>> put 이전 : (0)size: " + mList.get(0).size() + " | (1)size: " + mList.get(1).size() + " | (2)size: " + mList.get(2).size() + ", total_size: " + size);
 		if (size > 0) {	// 0보다 크다면 maxSize, minSize 비교 필요
 			// maxSize >= minSize * 2 일 경우 innerList 새로 만듬
 			flag = checkInnerListSize();
 		}
 		
-		System.out.println(">> put 하기 전 flag : " + flag);
 		if (flag) {	// innerList 재생성하고 값 재분배하기
 			System.out.println("re defined start!!!!!!!!!!!!!!!!!!!!!!");
 			// 기존 나눠져있던 데이터 한 arrayList로 담기
@@ -214,47 +215,37 @@ public class MyHashMapByDh<K, V> {
 			
 			// 재생성 로직 실행
 			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
-			System.out.println(">> makeListtoUseHash 결가 innerList size : " + devideHashNo);
-			// 일반 put 처리
+
+			// tempList에 임시 보관한 데이터를 새로 생성된 mList에 할당
 			for (int i = 0; i < tempList.size(); i++) {
 				K tempKey = tempList.get(i).getKey();
 				V tempValue = tempList.get(i).getValue();
-				System.out.println(">> tempKey : " + tempKey + ", value : " + tempValue);
 				
-				int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
-				int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회
-				System.out.println(">> devideHashNo : " + devideHashNo);
-				System.out.println(">> listIndex : " + listIndex);
+				int listIndex = getListIndexByKey(tempKey);	// key값에 따른  devideHashNo의 listIndex 조회
 				
-				MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
+				MyEntry<K, V> newEntry = new MyEntry<K, V>(tempKey, tempValue);
 				mList.get(listIndex).add(newEntry);
-//				
 			}
-			
+		}
 
-		} else {
-			// 일반 put 처리
-			int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
-			int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회 
+		// 일반 put 처리
+		int listIndex = getListIndexByKey(key);	// key값에 따른  devideHashNo의 listIndex 조회
+		int entryIndex = findIndexByKey(key);	// key값에 따른 inner list의 Entry가 담긴 entryIndex 조회 
+		
+		if (-1 < entryIndex) {
+			// 덮어쓰기
+			previousValue = (V) mList.get(listIndex).get(entryIndex).getValue();
+			mList.get(listIndex).get(entryIndex).setValue(value);
 			
-			if (-1 < entryIndex) {
-				// 덮어쓰기
-				previousValue = (V) mList.get(listIndex).get(entryIndex).getValue();
-				mList.get(listIndex).get(entryIndex).setValue(value);
-				
-			} else {
-				MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
-				mList.get(listIndex).add(newEntry);
-				
-				size = getSumeOfInnerListSize();
-				
-			}
+		} else {
+			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, value);
+			mList.get(listIndex).add(newEntry);
+			
+//			size = getSumeOfInnerListSize();
 			
 		}
 		
 		size = getSumeOfInnerListSize();
-		System.out.println(">> put 결과 : (0)size: " + mList.get(0).size() + " | (1)size: " + mList.get(1).size() + " | (2)size: " + mList.get(2).size() + ", total_size: " + size + "\n");
-//		System.out.println(">> entrySet : " +  this.entrySet());
 		
 		return previousValue;
 	}
