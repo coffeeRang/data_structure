@@ -19,7 +19,8 @@ import java.util.Set;
 public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 
 	private MyArrayList<MyLinearMap<K, V>> mList = new MyArrayList<MyLinearMap<K, V>>();
-	private MyArrayList<Integer> remainderKeyList = new MyArrayList<Integer>();
+//	private MyArrayList<Integer> remainderKeyList = new MyArrayList<Integer>();
+	private int remainderKeyListSize = 0;
 	private int devideHashNo = 0;
 	
 	private int mergeListSize = 0;
@@ -116,12 +117,14 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	@Override
 	public MyLinearMap<K, V>.Entry<K, V> getEntryByIndex(int index) {
-		
-		for (int i = 0; i < remainderKeyList.size(); i++) {
-			System.out.println(i + ", " + index);
-			return mList.get(i).getEntryByIndex(index);
+
+		for (int i = 0; i < remainderKeyListSize; i++) {	// 0, 1, 2
+			int innerListSize = mList.get(i).size();
+			if (innerListSize != 0) {
+				MyLinearMap<K, V>.Entry<K, V> entry = mList.get(i).getEntryByIndex(index);
+				return entry;
+			}
 		}
-//		return mList.get(index).getEntryByIndex(index);
 		return null;
 	}
 	
@@ -130,14 +133,15 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 * hashMap을 만들기 위한 내부 MyArrayList 생성하는 메서드
 	 * @param size
 	 */
-	public void makeListToUseHash(int size) {
+	public void makeListToUseHash(int devideHashNo) {
 		mList = new MyArrayList<MyLinearMap<K, V>>();
-		devideHashNo = size;
-		remainderKeyList.clear();	// 초기화
-		for (int i = 0; i < size; i++) {
+		this.devideHashNo = devideHashNo;
+//		remainderKeyList.clear();	// 초기화
+		remainderKeyListSize = 0;
+		for (int i = 0; i < devideHashNo; i++) {
 			mList.add( new MyLinearMap<K, V>() );
-			remainderKeyList.add(i);
-			System.out.println(">> remainderKey : " + remainderKeyList.get(i));
+			remainderKeyListSize++;
+//			remainderKeyList.add(i);	// 0, 1, 2
 		}
 		this.size = getSumeOfInnerListSize();
 	}
@@ -155,12 +159,18 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		int listIndex = getListIndexByKey(key);
 		
 		for (int i = 0; i < mList.get(listIndex).size(); i++) {
-			K mapKey = (K) mList.get(listIndex).getEntryByKey(key).getKey();
-			if (key.equals(mapKey)) {
-				index = i;
-				break;
+			MyLinearMap<K, V>.Entry<K, V> entry = getEntryByKey(key);
+			if (entry != null) {
+				K mapKey = getEntryByKey(key).getKey();
+				
+				if (key.equals(mapKey)) {
+					index = i;
+					break;
+				}
 			}
 		}
+		
+//		getEntryByKey(key);
 		
 		return index;
 	}
@@ -196,7 +206,7 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	private int getSumeOfInnerListSize() {
 		int sumSize = 0;
-		for (int i = 0; i < remainderKeyList.size(); i++) {
+		for (int i = 0; i < remainderKeyListSize; i++) {
 			sumSize += mList.get(i).size();
 		}
 		return sumSize;
@@ -241,39 +251,37 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		checkNullValueOfKey(key);
 		V previousValue = null;
 		boolean flag = false;	// true : maxSize >= minSize*2 를 의미한다.
-		System.out.println(">> put 하려는 값 key : " + key + ", value : " + value);
+
 		if (size > 0) {	// 0보다 크다면 maxSize, minSize 비교 필요
 			// maxSize >= minSize * 2 일 경우 innerList 새로 만듬
 			flag = checkInnerListSize();
 		}
 		
 		if (flag) {	// innerList 재생성하고 값 재분배하기
-			System.out.println("re defined start!!!!!!!!!!!!!!!!!!!!!!");
-			// 기존 나눠져있던 데이터 한 arrayList로 담기 - 임시주석_20180914_김동혁
-//			MyArrayList<Entry<K, V>> tempList = new MyArrayList<Entry<K, V>>();
-//			
-//			for (int i= 0; i < mList.size(); i++) {
-//				mList.get(i).getEntryByKey(key);
-//				
-//				for (int j = 0; j < mList.get(i).size(); j++) {
-//					Entry<K, V> entry = mList.get(i).get(j);
-//					tempList.add(entry);
-//				}
-//			}
-//			
-//			// 재생성 로직 실행
-//			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
-//
-//			// tempList에 임시 보관한 데이터를 새로 생성된 mList에 할당
-//			for (int i = 0; i < tempList.size(); i++) {
-//				K tempKey = tempList.get(i).getKey();
-//				V tempValue = tempList.get(i).getValue();
-//				
-//				int listIndex = getListIndexByKey(tempKey);	// key값에 따른  devideHashNo의 listIndex 조회
-//				
-//				MyEntry<K, V> newEntry = new MyEntry<K, V>(tempKey, tempValue);
-//				mList.get(listIndex).add(newEntry);
-//			}
+			// 기존 나눠져있던 데이터 한 arrayList로 담기
+			MyArrayList<Entry<K, V>> tempList = new MyArrayList<Entry<K, V>>();
+			
+			for (int i= 0; i < mList.size(); i++) {
+				mList.get(i).getEntryByKey(key);
+				
+				for (int j = 0; j < mList.get(i).size(); j++) {
+					Entry<K, V> entry = mList.get(i).getEntryByIndex(j);
+					tempList.add(entry);
+				}
+			}
+			
+			// 재생성 로직 실행
+			makeListToUseHash(mList.size() * 2); // 개발중 미테스트);
+
+			// tempList에 임시 보관한 데이터를 새로 생성된 mList에 할당
+			for (int i = 0; i < tempList.size(); i++) {
+				K tempKey = tempList.get(i).getKey();
+				V tempValue = tempList.get(i).getValue();
+				
+				int listIndex = getListIndexByKey(tempKey);	// key값에 따른  devideHashNo의 listIndex 조회
+				
+				mList.get(listIndex).put(tempKey, tempValue);
+			}
 		}
 
 		// 일반 put 처리
@@ -284,7 +292,6 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 		if (-1 < entryIndex) {
 			// 덮어쓰기 - 임시주석_20180914_김동혁
 			previousValue = mList.get(listIndex).getEntryByIndex(entryIndex).getValue();
-			System.out.println("index에 해당하는 이전 value : " + previousValue);
 			mList.get(listIndex).getEntryByIndex(entryIndex).setValue(value);
 			
 		} else {
@@ -414,12 +421,14 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	public MyArrayList<V> values() {
 		MyArrayList<V> tempList = new MyArrayList<V>();
-//		for (int i = 0; i < mList.size(); i++) {
-//			for (int j = 0; j < mList.get(i).size(); j++) {
-//				V value = mList.get(i).get(j).getValue();
-//				tempList.add(value);
-//			}
-//		}
+
+		for (int i = 0; i < remainderKeyListSize; i++) {
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				V value = mList.get(i).getEntryByIndex(j).getValue();
+				tempList.add(value);
+			}
+			
+		}
 		return tempList;
 	}
 
@@ -429,16 +438,15 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 * @author dhkim
 	 * @return
 	 */
-	public Set<Entry<K, V>> entrySet() {
-		Set<Entry<K, V>> entrySet = new LinkedHashSet<Entry<K, V>>();
+	public Set<MyEntry<K, V>> entrySet() {
+		Set<MyEntry<K, V>> entrySet = new LinkedHashSet<MyEntry<K, V>>();
 		Set<K> keys = keySet();
 
-//		for (K key: keys) {
-//			MyEntry<K, V> newEntry = new MyEntry<K, V>(key, get(key));
-//			entrySet.add(newEntry);
-//		}
-		
-		
+		for (K key: keys) {
+			MyEntry<K, V> newEntry = new MyEntry<>(key, get(key));
+			entrySet.add(newEntry);
+			
+		}
 		return entrySet;
 	}
 	
@@ -450,29 +458,15 @@ public class MyHashMapByDh<K, V> extends MyLinearMap<K, V>{
 	 */
 	public Set<K> keySet() {
 		Set<K> keys = new LinkedHashSet<K>();
-		// 기존 항목
-//		for (int i = 0; i < mList.size(); i++) {
-//			for (int j = 0; j < mList.get(i).size(); j++) {
-//				K key = mList.get(i).get(j).getKey();
-//				keys.add(key);
-//			}
-//		}
-//		return keys;
-		System.out.println(">> size : " + size);
-		System.out.println(">> remainderKeyList size : " + remainderKeyList.size());
-		for (int i = 0; i < size; i++ ) {
-			
-			System.out.println(">>>> " + getEntryByIndex(i));
-			
-//				
-			
-		}
-		
-//		System.out.println(mList.get(0).getEntryByIndex(0).getValue());
-		// returnValue = mList.get(listIndex).getEntryByKey((K)key).getValue();
-		
-		return keys;
 
+		for (int i = 0; i < remainderKeyListSize; i++) {
+			for (int j = 0; j < mList.get(i).size(); j++) {
+				K key = mList.get(i).getEntryByIndex(j).getKey();
+				keys.add(key);
+			}
+		}
+			
+		return keys;
 		
 	}
 	

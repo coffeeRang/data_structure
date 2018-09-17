@@ -1,5 +1,6 @@
 package doje.dh.map.util;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class MyArrayList<E> {
@@ -253,4 +254,29 @@ public class MyArrayList<E> {
 	public int size() {
 		return this.size;
 	}
+
+
+	/**
+	 * values 메서드 구현시 주소값 아닌 값 출력위한 메서드
+	 * @author dhkim
+	 */
+	@Override
+	public String toString() {
+		String returnValue = "";
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i] != null) {
+				String value = "";
+				if (i == 0) {
+					value = (String) arr[i];
+				} else {
+					value = ", " + arr[i];
+				}
+				returnValue = returnValue + value;
+			}
+		}
+		return "[" + returnValue + "]";
+	}
+	
+	
+	
 }

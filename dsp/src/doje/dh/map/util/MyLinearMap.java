@@ -78,7 +78,6 @@ public class MyLinearMap<K, V> {
 		for (int i = 0; i < list.size(); i++) {
 			Entry<K, V> entry = list.get(i);
 			if (entry.getKey().equals(key)) {
-				System.out.println("myLinearMap size : " + size);
 				return entry;
 			}
 		}
@@ -92,16 +91,11 @@ public class MyLinearMap<K, V> {
 	 * @return
 	 */
 	public Entry<K, V> getEntryByIndex(int index) {
-		System.out.println("myLinearMap size : " + size);
-
+		if (index < list.size() ) {
+			Entry<K, V> entry = list.get(index);
+			return entry;
+		}
 		return null;
-//		System.out.println(list.get(0).getValue());
-		
-		
-//		Entry<K, V> entry = list.get(index);
-//		return entry;
-//		return list.get(index);
-		
 	}
 
 
