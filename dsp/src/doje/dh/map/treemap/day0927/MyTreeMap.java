@@ -21,7 +21,6 @@ public class MyTreeMap<K, V> {
 	}
 	
 	public class Node implements Comparable<K>, Map.Entry<K, V> {
-//		private Entry<K, V> entry;
 		private K key;
 		private V value;
 		private Node leftNode;
@@ -58,6 +57,7 @@ public class MyTreeMap<K, V> {
 		public int compareTo(K arg0) {
 			int resultNum = 0;
 			int hashCode = arg0.hashCode();
+
 			if (hashCode > key.hashCode()) {
 				resultNum = 1;
 				
@@ -76,17 +76,6 @@ public class MyTreeMap<K, V> {
 	}
 
 	
-	// 나중에 공통으로 빼기
-//	private Node searchIndexNode(int index) {
-//		Node myNode = firstNode;
-//
-//		for (int i = 0; i < index; i++) {
-//			myNode.compareTo(arg0)
-//			
-//		}
-//		return myNode;
-//	}
-	
 	
 	/**
 	 * key값에 해당하는 value TreeMap node에 넣는 메서드
@@ -96,32 +85,36 @@ public class MyTreeMap<K, V> {
 	 * @return
 	 */
 	public V put(K key, V value) {
-		String direction = null;
-		Node myNode = firstNode;
+		Node startNode = firstNode;
 		V previousValue = null;
 		
 		Node newNode = new Node(key, value);
-		System.out.println(">> newNode : " + newNode);
-		
 		if (firstNode == null ) {
 			firstNode = newNode;
 		} else {
-			for (int i = 0; i < size(); i++) {
-				int index = firstNode.compareTo(key);
+			while(startNode != null) {
+				int index = startNode.compareTo(key);
 				if (index > 0) {
-					if (myNode.rightNode == null) {
-						System.out.println("----------------------- " + myNode);
-						myNode.rightNode = newNode;
+					if (startNode.rightNode == null) {
+						startNode.rightNode = newNode;
+						break;
+					} else {
+						startNode = startNode.rightNode;
+					}
+					
+				} else if (index < 0) {
+					if (startNode.leftNode == null) {
+						startNode.leftNode = newNode;
+						break;
+					} else {
+						startNode = startNode.leftNode;
 					}
 				} else {
-					if (myNode.leftNode != null) {
-						myNode = myNode.leftNode;
-						direction = "left";
-					}
-//					Node tempNode = myNode.leftNode;
-//					myNode.leftNode = newNode;
-//					newNode.leftNode = tempNode;
+					previousValue = startNode.getValue();
+					startNode.setValue(value);
+					break;
 				}
+
 			}
 		}
 		size++;
@@ -129,36 +122,33 @@ public class MyTreeMap<K, V> {
 	}
 	
 	/**
-	 * key값에 해당하는 TreeMap node value 조회
+	 * key값에 해당하는 TreeMap node value 조회 - 테스트(작동함)
 	 * @author dhkim
 	 * @param key
 	 * @return
 	 */
 	public V get(Object key) {
-		String direction = null;
 		V returnValue = null;
-		Node myNode = firstNode;
-		for (int i = 0; i < size(); i++) {
-			int index = firstNode.compareTo((K)key);
-			if (index > 0) {
-				if (myNode.rightNode != null) {
-					myNode = myNode.rightNode;
-					direction = "right";
-				}
+		Node startNode = firstNode;
 
-			} else if (index < 0) {
-				if (myNode.leftNode != null) {
-					myNode = myNode.leftNode;
-					direction = "left";
+		while(startNode != null) {
+			if (startNode.getKey().equals(key)) {
+				returnValue = startNode.getValue();
+				break;
+
+			} else {
+				int index = startNode.compareTo((K)key);
+
+				if (index > 0) {
+					startNode = startNode.rightNode;
+				} else if (index < 0) {
+					startNode = startNode.leftNode;
 				}
-				
 			}
 		}
-		
-		returnValue = myNode.getValue();
 		return returnValue;
 	}
-
+	
 
 	/**
 	 * Node에 해당 key 값 존재여부 확인
@@ -166,24 +156,64 @@ public class MyTreeMap<K, V> {
 	 * @param key
 	 * @return
 	 */
-//	public boolean containsKey(Object key) {
-//		int index = findIndexByKey((K) key);
-//		return index > -1? true: false;
-//	}
+	public boolean containsKey(Object key) {
+		boolean returnFlag = false;
+		V v = this.get(key);
+		if (v != null) {
+			returnFlag = true;
+		}
+		return returnFlag;
+	}
 
+	
+
+	/**
+	 * value 찾기위해 별도생성 메서드
+	 * @param value
+	 * @return
+	 */
+	public V checkValueInNode(V value) {
+		V returnValue = null;
+		Node startNode = firstNode;
+
+		while(startNode != null) {
+			if (startNode.getValue().equals(value)) {
+				returnValue = startNode.getValue();
+				break;
+
+			} else {
+				int index = startNode.compareTo(startNode.getKey());
+
+				if (index > 0) {
+					startNode = startNode.rightNode;
+				} else if (index < 0) {
+					startNode = startNode.leftNode;
+				} else {
+					returnValue = startNode.getValue();
+					break;
+				}
+			}
+		}
+		return returnValue;
+	}
+
+	
 	/**
 	 * 입력받은 value가 map에 존재하는지 확인하는 메서드
 	 * @author dhkim
 	 * @param value
 	 * @return
 	 */
-//	public boolean containsValue(Object value) {
-//		boolean returnFlag = false;
-//		if (0 < getIndexCountByValue((V) value)) {
-//			returnFlag = true;
-//		}
-//		return returnFlag;
-//	}
+	public boolean containsValue(Object value) {
+		boolean returnFlag = false;
+		
+		V findValue = checkValueInNode((V)value);
+		if (findValue != null) {
+			returnFlag = true;
+		}
+	
+		return returnFlag;
+	}
 	
 
 	/**
@@ -208,22 +238,43 @@ public class MyTreeMap<K, V> {
 	 * @author dhkim
 	 * @return
 	 */
-//	public boolean isEmpty() {
-//		return mList.size() == 0? true: false;
-//	}
+	public boolean isEmpty() {
+		return this.size() == 0? true: false;
+	}
 
 	/**
 	 * map의 key를 Set에 담아서 return 하는 메서드
 	 * @author dhkim
 	 * @return
 	 */
-//	public Set<K> keySet() {
-//		Set<K> keys = new LinkedHashSet<K>();
-//		for (int i = 0; i < mList.size(); i++) {
-//			keys.add(mList.get(i).getKey());
-//		}
-//		return keys;
-//	}
+	public Set<K> keySet() {
+		Set<K> keys = new LinkedHashSet<K>();
+		Node startNode = firstNode;
+		int temp = 0;
+		while(startNode != null) {
+			K key = null;
+			if (startNode.getKey().equals(key)) {
+				keys.add(key);
+				break;
+
+			} else {
+				int index = startNode.compareTo(startNode.getKey());
+
+				if (index > 0) {
+					startNode = startNode.rightNode;
+					keys.add(startNode.getKey());
+				} else if (index < 0) {
+					startNode = startNode.leftNode;
+					keys.add(startNode.getKey());
+				} else {
+					key = startNode.getKey();
+					break;
+				}
+			}
+		}
+
+		return keys;
+	}
 
 
 	/**
@@ -232,10 +283,37 @@ public class MyTreeMap<K, V> {
 	 * @param m
 	 */
 	public void putAll(Map<? extends K, ? extends V> m) {
-		Set<K> setKey = (Set<K>) m.keySet();
-		for (K key: setKey) {
-			put(key, m.get(key));
+//		Set<K> setKey = (Set<K>) m.keySet();
+//		for (K key: setKey) {
+//			put(key, m.get(key));
+//		}
+	}
+	
+	/**
+	 * key값에 해당하는 Node return
+	 * @author dhkim
+	 * @param key
+	 * @return
+	 */
+	public Node getNodeByKey(K key) {
+		Node returnNode = null;
+		Node startNode = firstNode;
+
+		while(startNode != null) {
+			if (startNode.getKey().equals(key)) {
+				returnNode = startNode;
+				break;
+
+			} else {
+				int index = startNode.compareTo((K)key);
+				if (index > 0) {
+					startNode = startNode.rightNode;
+				} else if (index < 0) {
+					startNode = startNode.leftNode;
+				}
+			}
 		}
+		return returnNode;
 	}
 	
 	
@@ -245,17 +323,46 @@ public class MyTreeMap<K, V> {
 	 * @param key
 	 * @return
 	 */
-//	public V remove(Object key) {
-//		V previousValue = null;
+	public V remove(Object key) {
+		V previousValue = null;
+		Node nodeByKey= getNodeByKey((K)key);
+		nodeByKey.setValue(null);
+//		if (nodeByKey == ) {
+//			
+//		}
+		
+		
 //		int index = findIndexByKey((K) key);
+		
 //
 //		if (index > -1) {
 //			previousValue = mList.get(index).getValue();
 //			mList.remove(index);
 //			size = mList.size();
 //		}
-//		return previousValue;
-//	}
+//		Node startNode = firstNode;
+//
+//		while(startNode != null) {
+//			if (startNode.getKey().equals(key)) {
+//				previousValue = startNode.getValue();
+//				break;
+//
+//			} else {
+//				int index = startNode.compareTo((K)key);
+//
+//				if (index > 0) {
+//					startNode = startNode.rightNode;
+//				} else if (index < 0) {
+//					startNode = startNode.leftNode;
+//				}
+//			}
+//		}
+//		if (previousValue == null) {
+//			startNode = null;
+//		}
+		
+		return previousValue;
+	}
 
 	
 	/**
