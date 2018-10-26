@@ -45,8 +45,9 @@ public class TreeMapMain {
 		System.out.println("조회결과 : " + mMap.get(5));
 		System.out.println(mMap.remove(5));
 		System.out.println("조회결과 : " + mMap.get(5));
+		System.out.println("keySet : " + mMap.keySet());
 		
-		TreeMap tMap = new TreeMap();
+//		TreeMap tMap = new TreeMap();
 		
 		
 //		mMap.put(3,  "테스트3");

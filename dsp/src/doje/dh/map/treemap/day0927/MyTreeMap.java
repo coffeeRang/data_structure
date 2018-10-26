@@ -268,7 +268,8 @@ public class MyTreeMap<K, V> {
 					keys.add(startNode.getKey());
 				} else {
 					key = startNode.getKey();
-					break;
+					System.out.println("key : " + key);
+//					break;
 				}
 			}
 		}
@@ -324,44 +325,107 @@ public class MyTreeMap<K, V> {
 	 * @return
 	 */
 	public V remove(Object key) {
-		V previousValue = null;
-		Node nodeByKey= getNodeByKey((K)key);
-		nodeByKey.setValue(null);
-//		if (nodeByKey == ) {
-//			
-//		}
-		
-		
-//		int index = findIndexByKey((K) key);
-		
-//
-//		if (index > -1) {
-//			previousValue = mList.get(index).getValue();
-//			mList.remove(index);
-//			size = mList.size();
-//		}
-//		Node startNode = firstNode;
-//
-//		while(startNode != null) {
-//			if (startNode.getKey().equals(key)) {
-//				previousValue = startNode.getValue();
-//				break;
-//
-//			} else {
-//				int index = startNode.compareTo((K)key);
-//
-//				if (index > 0) {
-//					startNode = startNode.rightNode;
-//				} else if (index < 0) {
-//					startNode = startNode.leftNode;
-//				}
-//			}
-//		}
-//		if (previousValue == null) {
-//			startNode = null;
-//		}
-		
-		return previousValue;
+		Node removeNode = this.firstNode;
+		Node superNode = null;	// 상위노드
+		int resultNum = 0;
+
+		// 해당 방향에 값 존재여부
+		boolean isDirection = false;
+		while (removeNode != null) {
+			resultNum = removeNode.compareTo((K) key);
+
+			if (resultNum > 0) {
+				superNode = removeNode;
+				removeNode = removeNode.rightNode;
+				isDirection = true;
+			} else if (resultNum < 0) {
+				superNode = removeNode;
+				removeNode = removeNode.leftNode;
+				isDirection = false;
+			} else {
+				//삭제 처리 시작
+				Node tempNode = removeNode.rightNode;
+				if (removeNode.getKey().hashCode() == this.firstNode.getKey().hashCode()) {
+					if (removeNode.rightNode == null && removeNode.leftNode == null) {
+						this.firstNode = null;
+
+					} else if (removeNode.rightNode != null && removeNode.leftNode == null) {
+						this.firstNode = this.firstNode.rightNode;
+
+					} else if (removeNode.rightNode == null && removeNode.leftNode != null) {
+						this.firstNode = this.firstNode.leftNode;
+
+					} else if (removeNode.rightNode != null && removeNode.leftNode != null) {
+
+						Node removeStandard = null;
+						while (tempNode != null) {
+							removeStandard = tempNode;
+							tempNode = tempNode.leftNode;
+						}
+						
+						removeStandard.rightNode = this.firstNode.leftNode;
+						this.firstNode = this.firstNode.rightNode;
+
+					}
+
+				// 삭제할 노드의 노른쪽 노드가 null이 아니고 왼쪽 노드가 널이 아닐 경우
+				} else if (removeNode.rightNode != null && removeNode.leftNode != null) {
+
+					//삭제할 노드의 오른쪽 노드 가장 왼쪽 끝을 찾음
+					Node removeStandard = null;
+					while (tempNode != null) {
+						removeStandard = tempNode;
+						tempNode = tempNode.leftNode;
+					}
+
+					//삭제할 노드의 오른쪽 노드의 왼쪽 끝의 왼쪽에 삭제할 노드의 왼쪽에 할당
+					removeStandard.leftNode = removeNode.leftNode;
+
+					if (isDirection) {
+						superNode.rightNode = removeNode.rightNode;
+
+					} else {
+						superNode.leftNode = removeNode.rightNode;
+
+					}
+
+				// 삭제할 노드의 오른쪽 노드가 null이고 왼쪽 노드가 null이 아닐 경우
+				} else if (removeNode.rightNode == null && removeNode.leftNode != null) {
+					if (isDirection) {
+						superNode.rightNode = removeNode.leftNode;
+
+					} else {
+						superNode.leftNode = removeNode.leftNode;
+
+					}
+
+				// 삭제할 노드의 오른쪽 노드가 null이 아니고 왼쪽 노드가 null일 경우
+				} else if (removeNode.rightNode != null && removeNode.leftNode == null) {
+					if (isDirection) {
+						superNode.rightNode = removeNode.rightNode;
+
+					} else {
+						superNode.leftNode = removeNode.rightNode;
+
+					}
+
+				// 삭제할 노드의 오른쪽 노드가 null이고 왼쪽 노트가 null이 아닐경우
+				} else if (removeNode.rightNode == null && removeNode.leftNode == null) {
+					if (isDirection) {
+						superNode.rightNode = null;
+
+					} else {
+						superNode.rightNode = null;
+
+					}
+				}
+				break;
+			}
+		}
+
+		this.size--;
+		return null;
+
 	}
 
 	
