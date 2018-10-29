@@ -45,16 +45,27 @@ public class TestReadExcel {
 			
 			// 7 : 출발지
 			for (String header: excelHeaderList) {
-				if (header.equals("출발지")) {
+//				if (header.equals("출발지")) {
 //					System.out.println(header);
-				}
+//				}
+				System.out.println(header);
 			}
 			
-			// payment type arr
-			String[] paymentTypeArr = {"", "현금", "카드", "마일리지(전부)", "마일리지(일부사용)", "지원금"};
-			String[] analysisResultCdArr = {"S", "E"};
+			// payment type arr - 00: 오류, 01: 현금, 02: 카드, 03: 마일리지(전부), 04: 마일리지(일부사용), 05: 지원금
+			String[] paymentTypeArr = {"오류", "현금", "카드", "마일리지(전부)", "마일리지(일부사용)", "지원금"};
+			
+			
+			/**
+			 * 정상
+			 * 오류
+			 * 	- 기 등록정보
+			 *  - 미 등록회원
+			 *  - 회사정보 오류
+			 */
+			String[] analysisResultCdArr = {"01", "02"};	// 01: 오류, 02: 정상
+			
 
-			System.out.println("----------------------- 출발지 정보 -----------------------");
+			/*System.out.println("----------------------- 출발지 정보 -----------------------");*/
 			ArrayList<TreeMap<String, Object>> excelList = new ArrayList<TreeMap<String, Object>>();
 
 			while(rowIterator.hasNext()) {
@@ -66,19 +77,17 @@ public class TestReadExcel {
 
 				if (customerPhoneNumber.equals("N/A")) {	// 고객전화 항목 데이터가 N/A일 경우 오류항목으로 처리
 					tempArr.put("startPosNm", startPosNm);
-					tempArr.put("paymentTypeCd", "오류");
-					tempArr.put("analysisResultCd", "오류");
+					tempArr.put("paymentTypeCd", paymentTypeArr[0]);			// 오류
+					tempArr.put("analysisResultCd", analysisResultCdArr[0]);	// 오류
 					
 				} else {
 //					String startPosNm = row.getCell(7).getStringCellValue();
 					String paymentTypeCd = getPaymentType(startPosNm);
-					
 					tempArr.put("startPosNm", startPosNm);
-					tempArr.put("analysisResultCd", "정상(임시)");			// 추가 항목
 					tempArr.put("paymentTypeCd", paymentTypeCd);
-
-//					System.out.println(">> paymentTypeCd : " + paymentTypeCd + ", paymentType : " + paymentTypeArr[Integer.parseInt(paymentTypeCd)] + "\t\t|startPosNm : " + startPosNm);
-					tempArr.put("paymentType", paymentTypeArr[Integer.parseInt(paymentTypeCd)]);
+					tempArr.put("analysisResultCd", analysisResultCdArr[1]);	// 정상
+					
+					tempArr.put("paymentType", paymentTypeArr[Integer.parseInt(paymentTypeCd)]);	// 테스트용으로 추가한 param
 					
 				}
 

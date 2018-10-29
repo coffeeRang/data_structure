@@ -24,8 +24,9 @@ public class TestMain {
 		String[] paymentTypeArr = {"", "현금", "카드", "마일리지(전부)", "마일리지(일부사용)", "지원금"};
 		
 		for (int i = 0; i < tempArr.size(); i ++) {
-			System.out.println(tempArr.get(i));
+			System.out.println(i + "번째 : " + tempArr.get(i));
 		}
+//		System.out.println(">> tempArr size : " + tempArr.size());
 		
 		
 	}
